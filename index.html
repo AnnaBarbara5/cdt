@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financeiro - CDT JACARÉPAGUÁ</title>
+    <link rel="icon" href="imagens/LOGOTIPO.png">
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+
+<div class="container-principal">
+    
+    <div class="header-planejamento">
+        <span class="badge">Cartão de todos</span>
+        <h1>Cadastro Financeiro</h1>
+        <p class="subtitulo">Preencha os dados abaixo para se filiar.</p>
+    </div>
+
+    <div class="progress-steps" id="progressSteps">
+        <div class="step active" id="step1-indicator">
+            <div class="step-number">1</div>
+            <div class="step-label">Dados Pessoais</div>
+        </div>
+        <div class="step-line"></div>
+        <div class="step" id="step2-indicator">
+            <div class="step-number">2</div>
+            <div class="step-label">Forma de Pagamento</div>
+        </div>
+    </div>
+
+    <div class="card-form">
+        <form id="financialForm" onsubmit="event.preventDefault();">
+            
+            <div class="form-step active" id="step-1">
+                <h2>Dados Pessoais</h2>
+                <p class="form-desc">Informações básicas de identificação e endereço</p>
+                
+                <div class="input-group">
+                    <label>Nome completo *</label>
+                    <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>E-mail *</label>
+                        <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Telefone *</label>
+                        <input type="text" id="telefone" name="telefone" placeholder="(21) 99999-9999" maxlength="15" required>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group">
+                        <label>CPF *</label>
+                        <input type="text" id="cpf_pessoal" name="cpf_pessoal" placeholder="000.000.000-00" maxlength="14" required>
+                        <span class="error-msg" id="error-cpf-pessoal">CPF inválido</span>
+                    </div>
+                    <div class="input-group">
+                        <label>Data de Nascimento *</label>
+                        <input type="date" id="data_nascimento" name="data_nascimento" required>
+                        <span class="error-msg" id="error-data-nascimento">Idade mínima de 18 anos obrigatória</span>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="input-group" style="flex: 0 0 30%;">
+                        <label>CEP *</label>
+                        <input type="text" id="cep" name="cep" placeholder="00000-000" maxlength="9" required>
+                        <span class="error-msg" id="error-cep">CEP inválido</span>
+                    </div>
+                    <div class="input-group" style="flex: 1;">
+                        <label>Logradouro *</label>
+                        <input type="text" id="logradouro" name="logradouro" placeholder="Rua, Avenida, etc." required>
+                    </div>
+                    <div class="input-group" style="flex: 0 0 20%;">
+                        <label>Número *</label>
+                        <input type="text" id="numero" name="numero" placeholder="123" required>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-next" id="btn-passo2">Próximo ➔</button>
+            </div>
+
+            <div class="form-step" id="step-2">
+                <h2 class="titulo-centralizado">Cadastro financeiro - Cartão de todos</h2>
+                
+                <div class="opcoes-cartao">
+                    <label class="radio-button">
+                        <input type="radio" name="pagamento" value="debito" checked>
+                        <span>Débito</span>
+                    </label>
+                    <label class="radio-button">
+                        <input type="radio" name="pagamento" value="credito">
+                        <span>Crédito</span>
+                    </label>
+                </div>
+
+                <div class="cartao-inputs">
+                    <input id="cartao" name="cartao" type="text" placeholder="xxxx-xxxx-xxxx-xxxx" maxlength="19" inputmode="numeric" required>
+
+                    <div class="row">
+                        <input id="validade" name="validade" type="text" placeholder="MM/AA" maxlength="5" inputmode="numeric" required>
+                        <input id="cvv" name="cvv" type="text" placeholder="CVV" maxlength="3" inputmode="numeric" required>
+                    </div>
+
+                    <input id="nome_cartao" name="nome_cartao" type="text" placeholder="Nome completo (como consta no cartão)" required>
+                    
+                    <div class="input-group" style="margin-bottom: 15px;">
+                        <input id="cpf_cartao" name="cpf_cartao" type="text" placeholder="CPF do titular" maxlength="14" required>
+                        <span class="error-msg" id="error-cpf-cartao" style="text-align: center;">CPF inválido</span>
+                    </div>
+
+                    <div class="row" style="gap: 10px;">
+                        <button type="button" id="btn-voltar" class="btn-next" style="background-color: #64748b; margin-top: 0;">⬅ Voltar</button>
+                        <button type="button" id="btn-finalizar" class="btn-submit" style="flex: 2; margin-top: 0;">Continuar</button>
+                    </div>
+                </div>
+
+                <h3 class="seguranca-texto">Seus dados estão protegidos 🔒</h3>
+            </div>
+
+            <div class="form-step layout-sucesso" id="step-sucesso">
+                <div class="success-icon">✓</div>
+                <h2>Sucesso.</h2>
+                <p>Transação em análise. Aguarde enquanto o sistema finaliza o processamento.</p>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
