@@ -8,7 +8,6 @@ error_reporting(E_ALL);
 header("Access-Control-Allow-Origin: *");
 header('Content-Type: application/json; charset=utf-8');
 
-// Captura erros fatais e exibe o motivo real no console do navegador
 register_shutdown_function(function() {
     $error = error_get_last();
     if ($error !== null && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_USER_ERROR])) {
@@ -30,16 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
-// =========================================================================
-// CONFIGURAÇÃO DO INFINITYFREE - COLOQUE SEUS DADOS REAIS REAIS DO PAINEL
-// =========================================================================
+
 $db_host = "sqlXXX.infinityfree.com"; // Seu MySQL Hostname do painel
 $db_user = "if0_xxxxxxxx";           // Seu MySQL Username do painel
 $db_pass = "SuaSenhaAqui";           // Sua senha da conta vshost
 $db_name = "if0_xxxxxxxx_db_cartao"; // Nome exato do banco criado lá
-// =========================================================================
 
-// Conecta ao banco de dados
+
 $conexao = @new mysqli($db_host, $db_user, $db_pass, $db_name);
 
 if ($conexao->connect_error) {
