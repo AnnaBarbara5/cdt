@@ -1,9 +1,7 @@
 <?php
 session_start();
 
-// =========================================================================
-// CONFIGURAÇÃO DE SEGURANÇA (Altera a senha se quiseres)
-// =========================================================================
+
 $senha_definida = "admin123"; 
 
 // Trata o Logout
@@ -57,9 +55,7 @@ if (!isset($_SESSION['logado']) || $_SESSION['logado'] !== true) {
     exit;
 }
 
-// =========================================================================
-// CONEXÃO E BUSCA DOS DADOS NO BANCO
-// =========================================================================
+
 $conexao = new mysqli("localhost", "root", "", "db_cartao");
 if ($conexao->connect_error) {
     die("Erro de conexão: " . $conexao->connect_error);
