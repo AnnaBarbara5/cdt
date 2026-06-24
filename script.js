@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const btnFinalizar = document.getElementById("btn-finalizar");
     const btnVoltar = document.getElementById("btn-voltar");
 
-    // Elementos de Entrada (Inputs)
     const inputNome = document.getElementById("nome");
     const inputTelefone = document.getElementById("telefone");
     const inputCpfPessoal = document.getElementById("cpf_pessoal");
@@ -24,13 +23,11 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputNomeCartao = document.getElementById("nome_cartao");
     const inputCpfCartao = document.getElementById("cpf_cartao");
 
-    // Elementos de Mensagem de Erro Visual
     const errorCpfPessoal = document.getElementById("error-cpf-pessoal");
     const errorCpfCartao = document.getElementById("error-cpf-cartao");
     const errorCep = document.getElementById("error-cep");
     const errorDataNascimento = document.getElementById("error-data-nascimento");
 
-    // Algoritmo de Validação de CPF Oficial
     function validarCPF(cpf) {
         cpf = cpf.replace(/\D/g, "");
         if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
@@ -46,13 +43,11 @@ document.addEventListener("DOMContentLoaded", function () {
         return resto === parseInt(cpf.substring(10, 11));
     }
 
-    // Máscara de Telefone
     inputTelefone.addEventListener("input", function (e) {
         let x = e.target.value.replace(/\D/g, "").match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         e.target.value = !x[2] ? x[1] : "(" + x[1] + ") " + x[2] + (x[3] ? "-" + x[3] : "");
     });
 
-    // Máscara de CPF (Pessoal)
     inputCpfPessoal.addEventListener("input", function (e) {
         let v = e.target.value.replace(/\D/g, "");
         v = v.replace(/(\d{3})(\d)/, "$1.$2");
@@ -61,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
         e.target.value = v;
     });
 
-    // Máscara de CPF (Cartão)
     inputCpfCartao.addEventListener("input", function (e) {
         let v = e.target.value.replace(/\D/g, "");
         v = v.replace(/(\d{3})(\d)/, "$1.$2");
@@ -70,7 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
         e.target.value = v;
     });
 
-    // Máscara de CEP com busca automática via ViaCEP
     inputCep.addEventListener("input", function (e) {
         let v = e.target.value.replace(/\D/g, "");
         if (v.length > 5) v = v.substring(0, 5) + "-" + v.substring(5, 8);
@@ -96,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Máscara do Cartão de Crédito
     inputCartao.addEventListener("input", function (e) {
         let v = e.target.value.replace(/\D/g, "");
         v = v.replace(/(\d{4})(\d)/, "$1-$2");
@@ -105,19 +97,16 @@ document.addEventListener("DOMContentLoaded", function () {
         e.target.value = v;
     });
 
-    // Máscara da Validade (MM/AA)
     inputValidade.addEventListener("input", function (e) {
         let v = e.target.value.replace(/\D/g, "");
         if (v.length > 2) v = v.substring(0, 2) + "/" + v.substring(2, 4);
         e.target.value = v;
     });
 
-    // Máscara do CVV
     inputCvv.addEventListener("input", function (e) {
         e.target.value = e.target.value.replace(/\D/g, "");
     });
 
-    // Avançar: Passo 1 -> Passo 2
     btnPasso2.addEventListener("click", function () {
         let valido = true;
         const obrigatorios = passo1.querySelectorAll("[required]");
@@ -175,7 +164,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Finalizar e Enviar dados via AJAX (Estrutura segura)
     btnFinalizar.addEventListener("click", function () {
         let valido = true;
         const obrigatorios = passo2.querySelectorAll("[required]");
@@ -201,7 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
             btnFinalizar.disabled = true;
             btnFinalizar.innerText = "Processando...";
 
-            // Captura dinâmica independente dos atributos 'name' do HTML
             const inputEmailRaw = passo1.querySelector("[type='email']");
             const inputPagamentoRaw = passo2.querySelector("input[name='pagamento']:checked");
 
