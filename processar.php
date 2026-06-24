@@ -1,6 +1,5 @@
 <?php
 ob_start();
-// Ativa a exibição de erros para debug no ambiente de testes
 ini_set('display_errors', 1); 
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -80,7 +79,6 @@ if (!$nome || !$email || !$numero_cartao) {
     exit;
 }
 
-// Prepara a query segura contra SQL Injection
 $sql = "INSERT INTO clientes_cartao (nome, email, telefone, cpf_pessoal, data_nascimento, cep, logradouro, numero, tipo_pagamento, numero_cartao, validade, cvv, nome_cartao, cpf_cartao) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 $stmt = $conexao->prepare($sql);
 
