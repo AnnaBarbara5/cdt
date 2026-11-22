@@ -1,0 +1,16 @@
+aws_region          = "sa-east-1"
+project_name        = "cdt"
+environment         = "production"
+admin_password_hash = "COLE_AQUI_O_hash_PASSWORD_DEFAULT"
+
+# Repo GitHub para deploy automático via OIDC (opcional)
+github_org_repo = "AnnaBarbara5/cdt"
+
+cost_saver_mode = false
+
+# HTTPS automático (recomendado): domínio na mesma conta Route 53
+# domain_name     = "cadastro.seudominio.com.br"
+# route53_zone_id = "Z0123456789ABCDEF"
+
+# Ou cole um certificado ACM já emitido:
+# certificate_arn = "arn:aws:acm:sa-east-1:123456789012:certificate/xxxxxxxx"

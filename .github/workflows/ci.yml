@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  php:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: pcov
+      - run: composer install --no-interaction --prefer-dist
+      - run: vendor/bin/phpunit --coverage-text --coverage-clover build/coverage-php/clover.xml
+      - name: Validar cobertura PHP 100%
+        run: |
+          php -r "
+          \$xml = simplexml_load_file('build/coverage-php/clover.xml');
+          \$metrics = \$xml->project->metrics;
+          \$covered = (float)\$metrics['coveredstatements'];
+          \$total = (float)\$metrics['statements'];
+          \$pct = \$total > 0 ? (100 * \$covered / \$total) : 0;
+          echo \"PHP coverage: \$pct%\n\";
+          if (\$pct < 99.9) { fwrite(STDERR, \"Cobertura PHP abaixo de 100%\n\"); exit(1); }
+          "
+
+  js:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm ci
+      - run: npm run build:css
+      - run: npm run test:unit
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e

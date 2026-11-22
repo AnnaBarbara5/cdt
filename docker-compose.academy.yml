@@ -1,0 +1,21 @@
+# Perfil AWS Academy / Vocareum: uma EC2, SQLite, sem RDS/ECS/IAM.
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      APP_ENV: staging
+      APP_DEBUG: "false"
+      DB_DRIVER: sqlite
+      DB_DATABASE: /var/www/html/data/cdt.sqlite
+      PAYMENT_GATEWAY: mock
+      SESSION_SECURE: "false"
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+    volumes:
+      - cdt_data:/var/www/html/data
+
+volumes:
+  cdt_data:

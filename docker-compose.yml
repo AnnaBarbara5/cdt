@@ -1,0 +1,36 @@
+services:
+  app:
+    image: php:8.2-cli
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "false"
+      DB_DRIVER: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: cdt
+      DB_USERNAME: cdt
+      DB_PASSWORD: cdt
+      PAYMENT_GATEWAY: mock
+    command: php -S 0.0.0.0:8080 -t /app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: cdt
+      MYSQL_USER: cdt
+      MYSQL_PASSWORD: cdt
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3307:3306"
+    volumes:
+      - cdt_mysql:/var/lib/mysql
+
+volumes:
+  cdt_mysql:

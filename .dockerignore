@@ -1,0 +1,17 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+data/
+vendor/
+node_modules/
+coverage/
+build/
+playwright-report/
+test-results/
+tests/
+composer.phar
+composer-setup.php
+*.md
+!README.md

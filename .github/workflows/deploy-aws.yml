@@ -1,0 +1,63 @@
+name: Deploy AWS
+
+on:
+  workflow_dispatch:
+    inputs:
+      target:
+        description: Ambiente de deploy
+        required: true
+        default: production
+        type: choice
+        options:
+          - production
+          - homolog
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "js/**"
+      - "CSS/**"
+      - "index.html"
+      - "Dockerfile"
+      - "*.php"
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
+    env:
+      AWS_REGION: sa-east-1
+      PROJECT_NAME: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'homolog' && 'cdt-hml' || 'cdt' }}
+      ECR_REPOSITORY: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'homolog' && 'cdt-hml-app' || 'cdt-app' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ github.event_name == 'workflow_dispatch' && inputs.target == 'homolog' && secrets.AWS_DEPLOY_ROLE_ARN_HOMOLOG || secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: latest
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+      - name: Redeploy ECS service
+        run: |
+          aws ecs update-service \
+            --cluster "${{ env.PROJECT_NAME }}-cluster" \
+            --service "${{ env.PROJECT_NAME }}-service" \
+            --force-new-deployment \
+            --no-cli-pager

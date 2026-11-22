@@ -1,0 +1,14 @@
+aws_region          = "sa-east-1"
+project_name        = "cdt-hml"
+environment         = "staging"
+cost_saver_mode     = true
+app_desired_count   = 1
+app_cpu             = 256
+app_memory          = 512
+admin_password_hash = "COLE_AQUI_O_hash_PASSWORD_DEFAULT"
+
+github_org_repo = "AnnaBarbara5/cdt"
+
+# Homolog geralmente sem domínio próprio (HTTP do ALB). Para testar HTTPS:
+# domain_name       = "hml.seudominio.com.br"
+# route53_zone_id   = "Z0123456789ABCDEF"

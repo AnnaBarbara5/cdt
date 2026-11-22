@@ -1,0 +1,31 @@
+{
+    "name": "cdt/jacarepagua",
+    "description": "Cadastro Financeiro CDT Jacarepaguá",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2",
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "test:coverage": "phpunit --coverage-text --coverage-html build/coverage-php"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

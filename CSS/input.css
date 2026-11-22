@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@source "../index.html";
+@source "../js/**/*.js";
+@source "../src/View/**/*.php";
+
+@theme {
+    --color-brand-50: #ecfdf5;
+    --color-brand-100: #d1fae5;
+    --color-brand-500: #00a868;
+    --color-brand-600: #00995f;
+    --color-brand-700: #008f58;
+    --font-sans: "Segoe UI", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+    body {
+        @apply min-h-screen bg-slate-50 text-slate-800 antialiased;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="date"],
+    input[type="password"],
+    input:not([type]) {
+        @apply w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20;
+    }
+
+    label {
+        @apply text-sm font-medium text-slate-700;
+    }
+}
+
+@layer components {
+    .step-panel {
+        @apply hidden;
+    }
+
+    .step-panel.active {
+        @apply block;
+    }
+
+    .step-indicator {
+        @apply opacity-45;
+    }
+
+    .step-indicator.active {
+        @apply opacity-100;
+    }
+
+    .field-error {
+        @apply mt-1 hidden text-xs font-medium text-red-600;
+    }
+
+    .field-error.is-visible {
+        @apply block;
+    }
+
+    .btn-primary {
+        @apply inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500/40 disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .btn-secondary {
+        @apply inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-slate-400/40;
+    }
+
+    .input-invalid {
+        @apply border-red-500 ring-2 ring-red-500/20;
+    }
+
+    .input-valid {
+        @apply border-slate-300 ring-0;
+    }
+
+    .badge-debito {
+        @apply inline-flex rounded-md bg-blue-100 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-blue-800;
+    }
+
+    .badge-credito {
+        @apply inline-flex rounded-md bg-amber-100 px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-amber-900;
+    }
+}

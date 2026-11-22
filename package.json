@@ -1,0 +1,24 @@
+{
+  "name": "cdt-jacarepagua",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:css": "npx --yes @tailwindcss/cli -i CSS/input.css -o CSS/app.css --minify",
+    "watch:css": "npx --yes @tailwindcss/cli -i CSS/input.css -o CSS/app.css --watch",
+    "pretest:e2e": "npm run build:css",
+    "test": "npm run test:unit && npm run test:e2e",
+    "test:unit": "vitest run --coverage",
+    "test:unit:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.4",
+    "@playwright/test": "^1.51.0",
+    "tailwindcss": "^4.1.4",
+    "@vitest/coverage-v8": "^3.0.9",
+    "jsdom": "^26.0.0",
+    "serve": "^14.2.4",
+    "vitest": "^3.0.9"
+  }
+}
