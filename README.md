@@ -2,8 +2,48 @@
 
 Sistema web para **filiação digital** da unidade **CDT Jacarepaguá** (Cartão de TODOS): formulário em duas etapas, API PHP, painel administrativo, conformidade LGPD/PCI (sem persistência de PAN/CVV) e deploy local ou na **AWS** (ECS ou AWS Academy).
 
+**Código versionado:** https://github.com/AnnaBarbara5/cdt
+
+---
+
+## URLs configuradas na AWS (Academy / Vocareum)
+
+Perfil ativo: **EC2 `cdt-hml`** + **Apache/PHP** + **SQLite** (`us-east-1`, conta lab `635788942452`).  
+O IP público **muda** se você rodar `academy-launch-ec2.ps1 -Replace`; confira sempre a saída do script ou:
+
+```powershell
+& "C:\Program Files\Amazon\AWSCLIV2\aws.exe" ec2 describe-instances `
+  --region us-east-1 `
+  --filters "Name=tag:Name,Values=cdt-hml" "Name=instance-state-name,Values=running" `
+  --query "Reservations[0].Instances[0].PublicIpAddress" --output text
+```
+
+| Ambiente | URL | Uso |
+|----------|-----|-----|
+| **Formulário (público)** | http://3.235.59.4/index.html | Cadastro em duas etapas |
+| **Painel administrativo** | http://3.235.59.4/painel.php | Login por senha (hash no deploy) |
+| **API de cadastro** | http://3.235.59.4/processar.php | `POST` JSON (CSRF obrigatório) |
+| **Token CSRF** | http://3.235.59.4/csrf-token.php | Front carrega antes do envio |
+| **Config pública** | http://3.235.59.4/config-public.php | Flags (`debug`) para o front |
+
+| Recurso AWS | Identificador |
+|-------------|----------------|
+| Região | `us-east-1` |
+| Instância | `cdt-hml` (EC2, Amazon Linux 2023) |
+| IP público (atual) | `3.235.59.4` |
+| Bucket de deploy | `cdt-lab-635788942452-us-east-1` (artefato `cdt-deploy.tar.gz`) |
+| Security group (script) | `cdt-lab-sg` |
+
+**Conta completa (ECS + ALB + RDS):** não disponível neste lab Vocareum; após provisionar com Terraform, use `cd infra\terraform` → `terraform output app_url` (ver [docs/aws-publicacao.md](docs/aws-publicacao.md)).
+
+Senha do painel no lab: gerada localmente em `data\.painel-homolog.local.txt` (arquivo ignorado pelo Git).
+
+---
+
 | Documento | Público |
 |-----------|---------|
+| **[Pré-projeto GR-03 (modelo institucional)](docs/2026-2-BG-PREPROJETO-INFRA-GR-03-CDT.html)** | [PDF](docs/2026-2-BG-PREPROJETO-INFRA-GR-03-CDT.pdf) — `node scripts/generate-preprojeto-pdf.mjs` |
+| **[Entrega Final — Infraestrutura AWS (UNISUAM)](docs/2026-GR-01-Documentacao-Entrega-Final-Infraestrutura-AWS.md)** | Documento ampliado GR-01 |
 | **[Documentação completa da solução](docs/documentacao-solucao-completa.md)** | Arquitetura, dados, segurança, operação, ADRs |
 | **[RED — Registro de Especificação de Desenvolvimento](docs/RED.md)** | Requisitos, RFs/RNFs, critérios de aceite |
 | **[Publicação AWS (conta completa)](docs/aws-publicacao.md)** | ECS Fargate, RDS, ECR, Terraform |
@@ -213,7 +253,7 @@ A conta acadêmica **não permite** ECS, RDS e criação de IAM como no Terrafor
 O script envia o projeto como **`.tar.gz`** para S3, sobe **EC2 Amazon Linux 2023**, instala **Apache + PHP**, extrai em `/var/www/html` e grava `.env` com SQLite.  
 Senha do painel de homolog (se gerada pelo script): `data\.painel-homolog.local.txt` — **não versionar**.
 
-Aguarde **2–4 minutos** após o script e acesse a URL exibida no terminal (`http://<IP>/index.html`).
+Aguarde **2–4 minutos** após o script e acesse a URL exibida no terminal (ou a tabela [URLs configuradas na AWS](#urls-configuradas-na-aws-academy--vocareum) acima, atualizada após cada deploy).
 
 Guia e troubleshooting: [docs/aws-academy-ec2.md](docs/aws-academy-ec2.md).
 

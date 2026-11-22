@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>Projeto Final — CDT Jacarepaguá — Infraestrutura AWS</title>
+  <style>
+    :root {
+      --green-900: #14532d;
+      --green-800: #166534;
+      --green-700: #15803d;
+      --green-600: #16a34a;
+      --green-500: #22c55e;
+      --green-100: #dcfce7;
+      --green-50: #f0fdf4;
+      --mint-bg: #eef8f1;
+      --text: #1f2937;
+      --muted: #4b5563;
+    }
+    @page { size: A4; margin: 0; }
+    @media print {
+      .page { page-break-after: always; }
+      .no-print { display: none; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", Calibri, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.42;
+      color: var(--text);
+      margin: 0;
+      padding: 0;
+      background: var(--mint-bg);
+    }
+    .no-print {
+      font-size: 10pt;
+      padding: 8px;
+      background: var(--green-100);
+      text-align: center;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 8mm 10mm 10mm;
+      background: linear-gradient(165deg, #e8f5ec 0%, #f4fbf6 35%, #f8faf9 100%);
+    }
+    .page-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 22px rgba(22, 101, 52, 0.1);
+      border: 1px solid #c7ead1;
+      padding: 14px 18px 18px;
+      min-height: 275mm;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, var(--green-800), var(--green-600));
+      color: #fff;
+      font-size: 9pt;
+      font-weight: 600;
+      padding: 7px 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .top-bar .pag {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 8.5pt;
+    }
+    .pre-footer {
+      text-align: center;
+      font-size: 8.5pt;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--green-800);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .hdr-preface {
+      border-left: 5px solid var(--green-600);
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, var(--green-50), #fff);
+      border-radius: 0 8px 8px 0;
+    }
+    .hdr-preface .line1 {
+      font-size: 10pt;
+      font-weight: 700;
+      color: var(--green-900);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .hdr-preface .line2 {
+      font-weight: 800;
+      font-size: 12pt;
+      color: var(--green-700);
+      margin-top: 5px;
+    }
+    .hdr-preface .line3 {
+      font-weight: 600;
+      margin-top: 3px;
+      color: var(--green-800);
+    }
+    .hdr-preface .line4 {
+      font-style: italic;
+      margin-top: 6px;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    h2.sec {
+      font-size: 11pt;
+      font-weight: 700;
+      margin: 14px 0 8px;
+      color: #fff;
+      background: linear-gradient(90deg, var(--green-700), var(--green-500));
+      padding: 6px 12px;
+      border-radius: 6px;
+      box-shadow: 0 2px 6px rgba(22, 163, 74, 0.25);
+    }
+    .kv { margin: 4px 0; }
+    .kv .k { font-weight: 700; color: var(--green-800); }
+    p { margin: 6px 0; text-align: justify; }
+    table.tbl {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 10pt;
+      margin: 6px 0 10px;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid #bbf7d0;
+    }
+    table.tbl th,
+    table.tbl td {
+      padding: 6px 8px;
+      vertical-align: top;
+      border-bottom: 1px solid #d1fae5;
+    }
+    table.tbl th {
+      background: var(--green-700);
+      color: #fff;
+      font-weight: 700;
+      text-align: left;
+    }
+    table.tbl tr:nth-child(even) td {
+      background: var(--green-50);
+    }
+    table.tbl tr:last-child td {
+      border-bottom: none;
+    }
+    table.scope ul {
+      margin: 2px 0;
+      padding-left: 16px;
+    }
+    table.scope li { margin: 2px 0; }
+    .cron-bar {
+      display: block;
+      height: 11px;
+      background: linear-gradient(90deg, var(--green-700), var(--green-500));
+      border-radius: 4px;
+      margin: 3px 4px;
+      box-shadow: 0 1px 3px rgba(22, 163, 74, 0.35);
+    }
+    .cron-note {
+      font-size: 9.5pt;
+      margin-top: 4px;
+      color: var(--muted);
+    }
+    .diag-frame {
+      border: 2px solid var(--green-600);
+      border-radius: 10px;
+      padding: 14px;
+      margin: 8px 0 10px;
+      background: var(--green-50);
+    }
+    .diag-vpc-title {
+      text-align: center;
+      font-weight: 800;
+      font-size: 10.5pt;
+      color: var(--green-900);
+      padding-bottom: 8px;
+      margin-bottom: 10px;
+      border-bottom: 2px solid var(--green-500);
+    }
+    .diag-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .dbox {
+      border: 2px solid var(--green-600);
+      background: #fff;
+      text-align: center;
+      padding: 8px 10px;
+      font-size: 9.5pt;
+      min-width: 88px;
+      line-height: 1.3;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(22, 163, 74, 0.12);
+    }
+    .dbox strong { color: var(--green-800); }
+    .darrow {
+      font-size: 16pt;
+      font-weight: 700;
+      color: var(--green-600);
+    }
+    .diag-mid {
+      display: flex;
+      justify-content: center;
+      margin: 8px 0;
+    }
+    .diag-app,
+    .diag-db-zone {
+      border: 2px dashed var(--green-500);
+      padding: 10px;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .diag-app-lbl {
+      font-size: 8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--green-700);
+      margin-bottom: 6px;
+    }
+    .diag-bottom {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .daux {
+      border: 2px solid var(--green-600);
+      padding: 8px 12px;
+      font-size: 9.5pt;
+      text-align: center;
+      background: #fff;
+      min-width: 130px;
+      border-radius: 8px;
+    }
+    .fluxo {
+      font-size: 10pt;
+      margin-top: 10px;
+      padding: 10px 12px;
+      background: #fff;
+      border-left: 4px solid var(--green-600);
+      border-radius: 0 6px 6px 0;
+    }
+    ol.num {
+      margin: 6px 0;
+      padding-left: 22px;
+    }
+    ol.num li { margin: 4px 0; }
+    .ref {
+      margin-top: 14px;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--green-50);
+      border: 1px solid #bbf7d0;
+    }
+    .ref-title {
+      font-weight: 800;
+      color: var(--green-800);
+      margin-bottom: 6px;
+    }
+    .ref p { text-align: left; margin: 3px 0; font-size: 10pt; }
+    .alert-pay {
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      margin-top: 6px;
+    }
+    .cover-sheet {
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: 8mm 10mm;
+      min-height: 297mm;
+      box-sizing: border-box;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(255, 255, 255, 0.12), transparent 45%),
+        linear-gradient(165deg, #0a3d22 0%, #166534 38%, #22c55e 72%, #4ade80 100%);
+    }
+    .cover-panel {
+      width: 100%;
+      max-width: 182mm;
+      min-height: 281mm;
+      height: 281mm;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+      padding: 20mm 16mm 18mm;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6mm;
+    }
+    .cover-hero {
+      width: 100%;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .cover-logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 22px 14px 20px;
+      margin-bottom: 16px;
+      background: linear-gradient(180deg, #f8fff9 0%, #fff 100%);
+      border: 1px solid #d1fae5;
+      border-radius: 14px;
+      box-shadow: 0 6px 24px rgba(22, 101, 52, 0.1);
+    }
+    .cover-logo {
+      width: 300px;
+      max-width: 92%;
+      height: auto;
+      margin: 0 auto;
+      display: block;
+    }
+    .cover-inst {
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.45;
+      margin: 0 auto 10px;
+      max-width: 90%;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .cover-course {
+      display: block;
+      width: 100%;
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.45;
+      margin: 0 auto;
+      padding: 14px 18px;
+      text-align: center;
+      background: linear-gradient(135deg, var(--green-800), var(--green-600));
+      border-radius: 10px;
+      box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+      letter-spacing: 0.02em;
+    }
+    .cover-main {
+      width: 100%;
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-evenly;
+      min-height: 108mm;
+      padding: 4mm 0;
+    }
+    .cover-title-block,
+    .cover-work-block,
+    .cover-members {
+      width: 100%;
+      max-width: 150mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .cover-doc-type {
+      display: inline-block;
+      font-size: 12pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--green-50);
+      margin: 0 0 8px;
+      padding: 12px 26px;
+      line-height: 1.35;
+      background: linear-gradient(90deg, var(--green-900), var(--green-700));
+      border-radius: 999px;
+      box-shadow: 0 4px 12px rgba(20, 83, 45, 0.25);
+    }
+    .cover-doc-sub {
+      font-size: 10pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--green-700);
+      margin: 0;
+    }
+    .cover-project {
+      font-size: 18pt;
+      font-weight: 800;
+      color: var(--green-800);
+      margin: 0 0 8px;
+      letter-spacing: 0.02em;
+    }
+    .cover-sub {
+      font-size: 11.5pt;
+      font-weight: 600;
+      color: #374151;
+      margin: 0 0 8px;
+    }
+    .cover-tagline {
+      font-size: 10.5pt;
+      font-style: italic;
+      color: var(--muted);
+      margin: 0 auto;
+      max-width: 92%;
+      line-height: 1.5;
+    }
+    .cover-members {
+      text-align: center;
+      padding: 16px 18px;
+      background: var(--green-50);
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+    }
+    .cover-members h3 {
+      font-size: 10pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--green-800);
+      margin: 0 0 8px;
+    }
+    .cover-members p {
+      margin: 4px 0;
+      text-align: center;
+      font-size: 10.5pt;
+      color: var(--text);
+    }
+    .cover-bottom {
+      width: 100%;
+      flex: 0 0 auto;
+      margin-top: 0;
+      padding-top: 14px;
+      border-top: 2px solid var(--green-100);
+    }
+    .cover-bottom p {
+      text-align: center;
+      margin: 4px 0;
+      font-size: 10pt;
+      color: var(--muted);
+    }
+    .cover-year {
+      font-size: 14pt;
+      font-weight: 800;
+      color: var(--green-800);
+      margin-top: 6px;
+      letter-spacing: 0.08em;
+    }
+  </style>
+</head>
+<body>
+
+<p class="no-print">Layout verde moderno — PDF: <code>node scripts/generate-preprojeto-pdf.mjs</code></p>
+
+<!-- Capa -->
+<div class="page cover-sheet">
+  <div class="cover-panel">
+    <div class="cover-hero">
+      <div class="cover-logo-wrap">
+        <img class="cover-logo" src="imagens/unisuam-logo.svg" alt="Logotipo UNISUAM" />
+      </div>
+      <p class="cover-inst">Centro Universitário Augusto Motta</p>
+      <p class="cover-course">Análise e Desenvolvimento de Sistemas</p>
+    </div>
+
+    <div class="cover-main">
+      <div class="cover-title-block">
+        <p class="cover-doc-type">Projeto Final</p>
+        <p class="cover-doc-sub">Infraestrutura e Arquitetura AWS</p>
+      </div>
+      <div class="cover-work-block">
+        <p class="cover-project">CDT JACAREPAGUÁ</p>
+        <p class="cover-sub">Cadastro Financeiro – Cartão de TODOS</p>
+        <p class="cover-tagline">Infraestrutura em Nuvem para o Sistema de Cadastro Financeiro</p>
+      </div>
+      <div class="cover-members">
+        <h3>Integrantes</h3>
+        <p>Anna Bárbara Silva Kmiciak dos Santos</p>
+        <p>Mayara de Jesus Lima</p>
+        <p>Nathally Nicoli</p>
+      </div>
+    </div>
+
+    <div class="cover-bottom">
+      <p>Disciplina: Infraestrutura e Arquitetura de Sistemas [ADS0401M]</p>
+      <p>Rio de Janeiro – Bangu (UNISUAM)</p>
+      <p class="cover-year">2026</p>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-card">
+    <div class="top-bar">
+      <span>UNISUAM • Análise e Desenvolvimento de Sistemas</span>
+      <span class="pag">Página 1</span>
+    </div>
+    <div class="hdr-preface">
+      <div class="line1">PROJETO FINAL | INFRAESTRUTURA E ARQUITETURA AWS</div>
+      <div class="line2">CDT JACAREPAGUÁ</div>
+      <div class="line3">Cadastro Financeiro – Cartão de TODOS</div>
+      <div class="line4">Infraestrutura em Nuvem para o Sistema de Cadastro Financeiro</div>
+    </div>
+
+    <h2 class="sec">1 Identificação do Grupo e Integrantes</h2>
+    <p class="kv"><span class="k">Instituição</span> UNISUAM</p>
+    <p class="kv"><span class="k">Curso</span> Análise e Desenvolvimento de Sistemas</p>
+    <p class="kv"><span class="k">Integrantes</span></p>
+    <p>Anna Bárbara Silva Kmiciak dos Santos</p>
+    <p style="margin: 2px 0;">Mayara de Jesus Lima</p>
+    <p style="margin: 2px 0 10px;">Nathally Nicoli</p>
+
+    <h2 class="sec">2 Título e Cenário / Empresa Escolhida</h2>
+    <p><strong>Título:</strong> Infraestrutura em Nuvem para o Sistema de Cadastro Financeiro CDT Jacarepaguá.</p>
+    <p><strong>Cenário:</strong> aplicação web de apoio ao cadastro de clientes do Cartão de TODOS, com formulário de identificação, endereço e seleção da modalidade de pagamento.</p>
+    <p><strong>Repositório de referência:</strong> github.com/AnnaBarbara5/cdt</p>
+
+    <h2 class="sec">3 Descrição do Problema ou Necessidade do Negócio</h2>
+    <p>O sistema necessita de um ambiente confiável para executar páginas PHP, processar formulários e proteger informações cadastrais. A ausência de uma infraestrutura planejada pode prejudicar a disponibilidade, a manutenção e a segurança.</p>
+    <p class="alert-pay"><strong>Atenção a dados sensíveis:</strong> como há campos relacionados a pagamento, a solução exige tratamento rigoroso desses dados e integração segura com provedor especializado, sem armazenar números completos de cartão ou CVV.</p>
+
+    <h2 class="sec">4 Objetivo Geral da Solução</h2>
+    <p>Projetar a disponibilização da aplicação web na AWS, com hospedagem de PHP, banco de dados relacional, rede segmentada, acesso seguro, monitoramento e cópias de segurança, para permitir evolução controlada do sistema.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-card">
+    <div class="pre-footer">CDT JACAREPAGUÁ | Projeto Final — Infraestrutura e Arquitetura AWS</div>
+    <div class="top-bar">
+      <span>UNISUAM • Análise e Desenvolvimento de Sistemas</span>
+      <span class="pag">Página 2</span>
+    </div>
+
+    <h2 class="sec">5 Levantamento dos Requisitos de Infraestrutura</h2>
+    <table class="tbl">
+      <tr><th>Categoria</th><th>Requisito</th></tr>
+      <tr><td>Aplicação</td><td>Servidor Linux com PHP e servidor web compatível com o projeto existente.</td></tr>
+      <tr><td>Dados</td><td>Banco MySQL gerenciado para cadastros não financeiros, com acesso privado.</td></tr>
+      <tr><td>Rede e segurança</td><td>VPC, sub-redes, Security Groups, HTTPS e credenciais fora do código.</td></tr>
+      <tr><td>Armazenamento</td><td>Disco EBS, backups e S3 privado para arquivos autorizados.</td></tr>
+      <tr><td>Operação</td><td>Logs, métricas e alertas com Amazon CloudWatch.</td></tr>
+    </table>
+
+    <h2 class="sec">6 Escopo do Projeto</h2>
+    <table class="tbl scope">
+      <tr><th>Dentro do escopo</th><th>Fora do escopo</th></tr>
+      <tr>
+        <td>
+          <ul>
+            <li>Análise do sistema atual</li>
+            <li>Arquitetura preliminar</li>
+            <li>Requisitos</li>
+            <li>Definição dos serviços AWS</li>
+            <li>Rede e segurança</li>
+            <li>Cronograma</li>
+            <li>Estratégia de publicação</li>
+            <li>Testes planejados</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Implantação efetiva nesta etapa</li>
+            <li>Processamento real de cartões</li>
+            <li>Aplicativo móvel</li>
+            <li>Certificação de conformidade</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+
+    <h2 class="sec">7 Cronograma das Atividades</h2>
+    <table class="tbl">
+      <tr>
+        <th>Atividade</th>
+        <th>Responsável</th>
+        <th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Levantamento de requisitos</td>
+        <td>Anna Bárbara e Mayara</td>
+        <td><span class="cron-bar"></span></td>
+        <td></td><td></td><td></td><td></td>
+        <td>Planejado</td>
+      </tr>
+      <tr>
+        <td>Desenho da arquitetura AWS</td>
+        <td>Nathally</td>
+        <td></td>
+        <td><span class="cron-bar"></span></td>
+        <td></td><td></td><td></td>
+        <td>Planejado</td>
+      </tr>
+      <tr>
+        <td>Planejamento de rede e segurança</td>
+        <td>Anna Bárbara</td>
+        <td></td><td></td>
+        <td><span class="cron-bar"></span></td>
+        <td></td><td></td>
+        <td>Planejado</td>
+      </tr>
+      <tr>
+        <td>Estratégia de publicação e testes</td>
+        <td>Mayara e Nathally</td>
+        <td></td><td></td><td></td>
+        <td><span class="cron-bar"></span></td>
+        <td></td>
+        <td>Planejado</td>
+      </tr>
+      <tr>
+        <td>Revisão e entrega documental</td>
+        <td>Todas</td>
+        <td></td><td></td><td></td><td></td>
+        <td><span class="cron-bar"></span></td>
+        <td>Planejado</td>
+      </tr>
+    </table>
+    <p class="cron-note">S = semana. As barras verdes indicam a semana prevista de execução de cada atividade.</p>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-card">
+    <div class="pre-footer">CDT JACAREPAGUÁ | Projeto Final — Infraestrutura e Arquitetura AWS</div>
+    <div class="top-bar">
+      <span>UNISUAM • Análise e Desenvolvimento de Sistemas</span>
+      <span class="pag">Página 3</span>
+    </div>
+
+    <h2 class="sec">8 Diagrama Preliminar da Arquitetura AWS</h2>
+    <div class="diag-frame">
+      <div class="diag-vpc-title">Amazon VPC + Security Groups</div>
+      <div class="diag-top">
+        <div class="dbox"><strong>Usuário</strong><br />Navegador</div>
+        <span class="darrow">→</span>
+        <div class="dbox"><strong>HTTPS (443)</strong></div>
+        <span class="darrow">→</span>
+        <div class="diag-app" style="min-width:240px">
+          <div class="diag-app-lbl">Subnet de aplicação</div>
+          <div class="dbox" style="margin:0 auto;border:none;box-shadow:none;min-width:180px">
+            <strong>Aplicação PHP</strong><br />Elastic Beanstalk + EC2
+          </div>
+        </div>
+      </div>
+      <div class="diag-mid">
+        <div class="diag-db-zone" style="min-width:240px">
+          <div class="diag-app-lbl">Subnet privada</div>
+          <div class="dbox" style="margin:0 auto;max-width:220px">
+            <strong>Banco de dados</strong><br />Amazon RDS MySQL<br /><span style="font-size:8.5pt">porta 3306</span>
+          </div>
+        </div>
+      </div>
+      <div class="diag-bottom">
+        <div class="daux"><strong>Monitoramento</strong><br />Amazon CloudWatch</div>
+        <div class="daux"><strong>Backups e arquivos</strong><br />Amazon S3 / snapshots</div>
+      </div>
+    </div>
+    <p class="fluxo"><strong>Fluxo proposto:</strong> o navegador acessa a aplicação exclusivamente por HTTPS; a aplicação consulta o RDS em rede privada. Não há acesso público direto ao banco. Os serviços indicados são planejados, não implantados.</p>
+
+    <h2 class="sec">9 Serviços AWS Previstos e Justificativa</h2>
+    <table class="tbl">
+      <tr><th>#</th><th>Serviço</th><th>Justificativa</th></tr>
+      <tr><td>1</td><td>AWS Elastic Beanstalk</td><td>Simplifica a implantação e a gestão do ambiente PHP.</td></tr>
+      <tr><td>2</td><td>Amazon EC2</td><td>Fornece processamento para o backend e as páginas dinâmicas.</td></tr>
+      <tr><td>3</td><td>Amazon RDS (MySQL)</td><td>Mantém os dados cadastrais em banco gerenciado e privado.</td></tr>
+      <tr><td>4</td><td>Amazon EBS e S3</td><td>Armazenamento da aplicação e de backups/arquivos permitidos.</td></tr>
+      <tr><td>5</td><td>Amazon VPC e Security Groups</td><td>Segmentação e restrição do tráfego de rede.</td></tr>
+      <tr><td>6</td><td>AWS IAM e ACM</td><td>Permissões de acesso e certificados TLS.</td></tr>
+      <tr><td>7</td><td>Amazon CloudWatch</td><td>Métricas, registros e alertas operacionais.</td></tr>
+    </table>
+  </div>
+</div>
+
+<div class="page">
+  <div class="page-card">
+    <div class="pre-footer">CDT JACAREPAGUÁ | Projeto Final — Infraestrutura e Arquitetura AWS</div>
+    <div class="top-bar">
+      <span>UNISUAM • Análise e Desenvolvimento de Sistemas</span>
+      <span class="pag">Página 4</span>
+    </div>
+
+    <h2 class="sec">10 Definição Preliminar de Computação, Redes, Segurança e Armazenamento</h2>
+    <table class="tbl">
+      <tr><th>Área</th><th>Definição</th></tr>
+      <tr><td>Computação</td><td>Ambiente Linux/PHP em EC2 de pequeno porte, dimensionado após testes; gerenciamento via Elastic Beanstalk.</td></tr>
+      <tr><td>Redes</td><td>VPC com camada web acessível via HTTPS e banco de dados em sub-rede privada; porta 3306 somente a partir da aplicação.</td></tr>
+      <tr><td>Segurança</td><td>HTTPS, IAM com privilégio mínimo, segredos protegidos, validação de entradas, backup e políticas de retenção.</td></tr>
+      <tr><td>Armazenamento</td><td>EBS para sistema e aplicação, RDS para registros e S3 privado para cópias e arquivos autorizados.</td></tr>
+    </table>
+
+    <h2 class="sec">11 Forma Prevista para Disponibilização da Solução na AWS</h2>
+    <p>A publicação está prevista no AWS Elastic Beanstalk, utilizando EC2 para executar PHP e RDS MySQL para dados. Este projeto final consolida o planejamento, a implementação e a documentação da solução. Para produção plena, será necessário:</p>
+    <ol class="num">
+      <li>Revisar o código;</li>
+      <li>Retirar segredos e dados de cartão do armazenamento próprio;</li>
+      <li>Integrar um provedor de pagamentos compatível;</li>
+      <li>Configurar o domínio e o HTTPS;</li>
+      <li>Testar os formulários;</li>
+      <li>Validar a restauração de backups.</li>
+    </ol>
+    <p><strong>Justificativa:</strong> diferentemente de hospedagem puramente estática, essa arquitetura suporta o processamento PHP presente no projeto e permite isolar o banco de dados da internet.</p>
+
+    <div class="ref">
+      <p class="ref-title">R Referências</p>
+      <p>Repositório CDT: https://github.com/AnnaBarbara5/cdt</p>
+      <p>AWS Documentation: https://docs.aws.amazon.com/</p>
+      <p>Modelo acadêmico fornecido: 2026-02-BG-PROJETO-INFRA-GR-12.pdf</p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <title>CDT Jacarepaguá — Entrega Final — Infraestrutura AWS</title>
+  <style>
+    @page { size: A4; margin: 14mm 15mm 18mm 15mm; }
+    @media print {
+      .sheet { page-break-after: always; }
+      .no-print { display: none; }
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: Calibri, "Segoe UI", Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.4;
+      color: #1a1a1a;
+      margin: 0 auto;
+      max-width: 210mm;
+      padding: 8px 10px 24px;
+      background: #fff;
+    }
+  .no-print {
+      background: #e0f2fe;
+      border: 1px solid #0ea5e9;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 10pt;
+    }
+    .cover {
+      text-align: center;
+      padding: 40px 20px 60px;
+      min-height: 250mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .cover .inst { font-size: 12pt; font-weight: 700; margin: 0 0 8px; }
+    .cover .course { font-weight: 700; margin: 0 0 28px; }
+    .cover h1 { font-size: 15pt; margin: 24px 0 12px; font-weight: 700; }
+    .cover .subtitle { font-weight: 600; margin: 8px 0; }
+    .cover .members { margin: 28px 0 8px; }
+    .cover .members p { margin: 4px 0; }
+    .cover .closing { margin-top: auto; padding-top: 80px; }
+    .cover .closing p { margin: 6px 0; }
+    .cover .closing .bold { font-weight: 700; }
+    .sheet-topbar {
+      font-size: 9.5pt;
+      color: #1e40af;
+      text-align: right;
+      margin-bottom: 4px;
+    }
+    .sheet-brand {
+      font-size: 9pt;
+      color: #334155;
+      margin-bottom: 10px;
+      line-height: 1.45;
+    }
+    .sheet-brand .main-title {
+      font-size: 10.5pt;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: 0.02em;
+    }
+    .sheet-brand .cdt { font-weight: 700; color: #1d4ed8; }
+    .sheet-preface {
+      font-style: italic;
+      font-size: 10.5pt;
+      margin: 6px 0 16px;
+      color: #334155;
+    }
+    .section {
+      margin: 14px 0 18px;
+    }
+    .section h2 {
+      font-size: 12pt;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 8px;
+      border-bottom: 2px solid #2563eb;
+      padding-bottom: 3px;
+    }
+    p { margin: 6px 0; text-align: justify; }
+    table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10pt;
+      margin: 8px 0;
+    }
+    table.data th,
+    table.data td {
+      border: 1px solid #64748b;
+      padding: 6px 8px;
+      vertical-align: top;
+    }
+    table.data th {
+      background: #dbeafe;
+      font-weight: 600;
+      text-align: left;
+    }
+    table.scope td { width: 50%; }
+    table.scope ul { margin: 4px 0; padding-left: 18px; }
+    .note {
+      font-size: 10pt;
+      color: #475569;
+      margin-top: 8px;
+    }
+    .page-footer {
+      margin-top: 20px;
+      padding-top: 8px;
+      border-top: 1px solid #94a3b8;
+      text-align: center;
+      font-size: 9pt;
+      color: #475569;
+      font-weight: 600;
+    }
+    .sheet-inner-footer {
+      font-size: 9pt;
+      text-align: center;
+      color: #1e3a8a;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    /* Diagrama Preliminar — estilo pré-projeto */
+    .aws-diagram-wrap {
+      border: 2px solid #2563eb;
+      border-radius: 4px;
+      padding: 12px 14px 14px;
+      margin: 10px 0 12px;
+      background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+    }
+    .aws-diagram-wrap > .vpc-title {
+      text-align: center;
+      font-weight: 700;
+      font-size: 10.5pt;
+      color: #1e3a8a;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px dashed #64748b;
+    }
+    .aws-flow {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .aws-box {
+      border: 2px solid #3b82f6;
+      background: #fff;
+      border-radius: 6px;
+      padding: 10px 12px;
+      min-width: 120px;
+      text-align: center;
+      font-size: 9.5pt;
+      line-height: 1.35;
+      box-shadow: 0 1px 3px rgba(37, 99, 235, 0.15);
+    }
+    .aws-box strong { display: block; color: #1e40af; font-size: 10pt; }
+    .aws-box.small { min-width: 100px; padding: 8px; }
+    .aws-arrow {
+      font-size: 14pt;
+      color: #2563eb;
+      font-weight: 700;
+    }
+    .aws-subnet-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 12px 0;
+    }
+    .aws-subnet {
+      border: 1px dashed #64748b;
+      background: #eff6ff;
+      padding: 10px;
+      border-radius: 4px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .aws-subnet-label {
+      font-size: 8.5pt;
+      font-weight: 700;
+      color: #475569;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .aws-aux {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .fluxo-text {
+      font-size: 10pt;
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: #fff;
+      border-left: 4px solid #2563eb;
+    }
+  </style>
+</head>
+<body>
+
+<p class="no-print">PDF: <code>node scripts/generate-entrega-final-pdf.mjs</code></p>
+
+<!-- Capa (Entrega Final) -->
+<div class="sheet cover">
+  <p class="inst">CENTRO UNIVERSITÁRIO AUGUSTO MOTTA (UNISUAM)</p>
+  <p class="course">CURSO SUPERIOR DE TECNOLOGIA EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS</p>
+  <h1>CDT Jacarepaguá — Documentação do Projeto de Infraestrutura</h1>
+  <p class="subtitle">Cadastro Financeiro – Cartão de TODOS</p>
+  <div class="members">
+    <p><strong>Integrantes:</strong></p>
+    <p>Anna Bárbara Silva Kmiciak dos Santos</p>
+    <p>Mayara de Jesus Lima</p>
+    <p>Nathally Nicoli</p>
+  </div>
+  <div class="closing">
+    <p class="bold">Entrega Final do projeto</p>
+    <p><strong>Professor:</strong> Silvio Eutimio</p>
+    <p style="margin-top: 48px;">Rio de Janeiro – Bangu (UNISUAM)</p>
+    <p>2026</p>
+  </div>
+</div>
+
+<!-- Página 1 — modelo pré-projeto -->
+<div class="sheet">
+  <div class="sheet-topbar">UNISUAM • Análise e Desenvolvimento de Sistemas &nbsp; <strong>Página 1</strong></div>
+  <div class="sheet-brand">
+    <div class="main-title">DOCUMENTAÇÃO DE ENTREGA FINAL | INFRAESTRUTURA E ARQUITETURA AWS</div>
+    <div><span class="cdt">CDT JACAREPAGUÁ</span></div>
+    <div>Cadastro Financeiro – Cartão de TODOS</div>
+  </div>
+  <p class="sheet-preface">Infraestrutura em Nuvem para o Sistema de Cadastro Financeiro</p>
+
+  <div class="section">
+    <h2>1 Identificação do Grupo e Integrantes</h2>
+    <table class="data">
+      <tr><th style="width:28%">Instituição</th><td>UNISUAM — Campus Bangu</td></tr>
+      <tr><th>Curso</th><td>Análise e Desenvolvimento de Sistemas</td></tr>
+      <tr><th>Integrantes</th><td>Anna Bárbara Silva Kmiciak dos Santos; Mayara de Jesus Lima; Nathally Nicoli</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>2 Título e Cenário / Empresa Escolhida</h2>
+    <p><strong>Título:</strong> Infraestrutura em Nuvem para o Sistema de Cadastro Financeiro CDT Jacarepaguá.</p>
+    <p><strong>Cenário:</strong> aplicação web de apoio ao cadastro de clientes do Cartão de TODOS, com formulário de identificação, endereço e seleção da modalidade de pagamento.</p>
+    <p><strong>Repositório de referência:</strong> github.com/AnnaBarbara5/cdt</p>
+  </div>
+
+  <div class="section">
+    <h2>3 Descrição do Problema ou Necessidade do Negócio</h2>
+    <p>O sistema necessita de um ambiente confiável para executar páginas PHP, processar formulários e proteger informações cadastrais. A ausência de uma infraestrutura planejada pode prejudicar a disponibilidade, a manutenção e a segurança.</p>
+    <p><strong>Atenção a dados sensíveis:</strong> como há campos relacionados a pagamento, a solução exige tratamento rigoroso desses dados e integração segura com provedor especializado, sem armazenar números completos de cartão ou CVV (implementado: tokenização mock/Stripe, últimos 4 dígitos).</p>
+  </div>
+
+  <div class="section">
+    <h2>4 Objetivo Geral da Solução</h2>
+    <p>Disponibilizar a aplicação web na AWS, com hospedagem de PHP, banco de dados relacional, rede segmentada, acesso seguro, monitoramento e cópias de segurança, permitindo evolução controlada do sistema — com implantação demonstrada no perfil AWS Academy (EC2) e arquitetura-alvo em ECS/RDS (Terraform).</p>
+  </div>
+
+  <div class="page-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+</div>
+
+<!-- Página 2 -->
+<div class="sheet">
+  <div class="sheet-inner-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+  <div class="sheet-topbar">UNISUAM • Análise e Desenvolvimento de Sistemas &nbsp; <strong>Página 2</strong></div>
+
+  <div class="section">
+    <h2>5 Levantamento dos Requisitos de Infraestrutura</h2>
+    <table class="data">
+      <tr><th>Categoria</th><th>Requisito</th></tr>
+      <tr><td>Aplicação</td><td>Servidor Linux com PHP 8.2+ e Apache (ou container ECS) compatível com o projeto.</td></tr>
+      <tr><td>Dados</td><td>Banco MySQL gerenciado (RDS) ou SQLite no lab; acesso privado ao RDS.</td></tr>
+      <tr><td>Rede e segurança</td><td>VPC, sub-redes, Security Groups, HTTPS e credenciais fora do código.</td></tr>
+      <tr><td>Armazenamento</td><td>Disco EBS, backups e S3 privado para artefatos de deploy autorizados.</td></tr>
+      <tr><td>Operação</td><td>Logs, métricas e alertas com Amazon CloudWatch; CI no GitHub Actions.</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>6 Escopo do Projeto</h2>
+    <table class="data scope">
+      <tr><th>Dentro do escopo</th><th>Fora do escopo</th></tr>
+      <tr>
+        <td>
+          <ul>
+            <li>Implementação da aplicação web completa</li>
+            <li>Arquitetura e publicação AWS (Academy + Terraform ECS/RDS)</li>
+            <li>Requisitos, rede, segurança, testes (CA-01 a CA-10)</li>
+            <li>Estratégia de publicação e documentação</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>Liquidação financeira real / certificação PCI formal</li>
+            <li>Aplicativo móvel</li>
+            <li>Autenticação corporativa (SSO)</li>
+          </ul>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>7 Cronograma das Atividades</h2>
+    <table class="data">
+      <tr><th>Atividade</th><th>Responsável</th><th>S1</th><th>S2</th><th>S3</th><th>S4</th><th>S5</th><th>Status</th></tr>
+      <tr><td>Levantamento de requisitos</td><td>Anna Bárbara e Mayara</td><td colspan="5" style="background:#bfdbfe;text-align:center">■■■</td><td>Concluído</td></tr>
+      <tr><td>Desenho da arquitetura AWS</td><td>Nathally</td><td></td><td colspan="4" style="background:#bfdbfe;text-align:center">■■■■</td><td>Concluído</td></tr>
+      <tr><td>Planejamento de rede e segurança</td><td>Anna Bárbara</td><td></td><td colspan="3" style="background:#bfdbfe;text-align:center">■■■</td><td></td><td>Concluído</td></tr>
+      <tr><td>Estratégia de publicação e testes</td><td>Mayara e Nathally</td><td></td><td></td><td colspan="3" style="background:#bfdbfe;text-align:center">■■■</td><td>Concluído</td></tr>
+      <tr><td>Revisão e entrega documental</td><td>Todas</td><td></td><td></td><td></td><td colspan="2" style="background:#bfdbfe;text-align:center">■■</td><td>Concluído</td></tr>
+    </table>
+    <p class="note">S = semana. As barras azuis indicam a semana prevista de execução de cada atividade.</p>
+  </div>
+
+  <div class="page-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+</div>
+
+<!-- Página 3 — Diagrama -->
+<div class="sheet">
+  <div class="sheet-inner-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+  <div class="sheet-topbar">UNISUAM • Análise e Desenvolvimento de Sistemas &nbsp; <strong>Página 3</strong></div>
+
+  <div class="section">
+    <h2>8 Diagrama Preliminar da Arquitetura AWS</h2>
+
+    <div class="aws-diagram-wrap">
+      <div class="vpc-title">Amazon VPC + Security Groups</div>
+
+      <div class="aws-flow">
+        <div class="aws-box">
+          <strong>Usuário</strong>
+          Navegador
+        </div>
+        <span class="aws-arrow">→</span>
+        <div class="aws-box">
+          <strong>HTTPS (443)</strong>
+        </div>
+        <span class="aws-arrow">→</span>
+        <div class="aws-box">
+          <strong>Aplicação PHP</strong>
+          Elastic Beanstalk + EC2<br />
+          <span style="font-size:8.5pt;color:#64748b">Subnet de aplicação</span>
+        </div>
+      </div>
+
+      <div class="aws-subnet-row">
+        <div class="aws-subnet">
+          <div class="aws-subnet-label">Subnet de aplicação</div>
+          <div class="aws-box small">
+            <strong>Banco de dados</strong>
+            Amazon RDS MySQL<br />
+            <span style="font-size:8.5pt">Subnet privada — porta 3306</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="aws-aux">
+        <div class="aws-box small">
+          <strong>Monitoramento</strong>
+          Amazon CloudWatch
+        </div>
+        <div class="aws-box small">
+          <strong>Backups e arquivos</strong>
+          Amazon S3 / snapshots
+        </div>
+      </div>
+    </div>
+
+    <div class="fluxo-text">
+      <strong>Fluxo proposto:</strong> o navegador acessa a aplicação exclusivamente por HTTPS; a aplicação consulta o RDS em rede privada. Não há acesso público direto ao banco. Na entrega final, o perfil <em>AWS Academy</em> utiliza EC2 + Apache/PHP + SQLite (HTTP 80) para demonstração; a arquitetura-alvo em conta completa evolui para <strong>ALB + ECS Fargate + RDS</strong> (Terraform), mantendo o mesmo princípio de isolamento do banco.
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>9 Serviços AWS Previstos e Justificativa</h2>
+    <table class="data">
+      <tr><th style="width:8%">#</th><th style="width:32%">Serviço</th><th>Justificativa</th></tr>
+      <tr><td>1</td><td>AWS Elastic Beanstalk</td><td>Simplifica a implantação e a gestão do ambiente PHP (modelo preliminar).</td></tr>
+      <tr><td>2</td><td>Amazon EC2</td><td>Fornece processamento para o backend e as páginas dinâmicas (lab Academy implementado).</td></tr>
+      <tr><td>3</td><td>Amazon RDS (MySQL)</td><td>Mantém os dados cadastrais em banco gerenciado e privado.</td></tr>
+      <tr><td>4</td><td>Amazon EBS e S3</td><td>Armazenamento da aplicação e de backups/arquivos permitidos.</td></tr>
+      <tr><td>5</td><td>Amazon VPC e Security Groups</td><td>Segmentação e restrição do tráfego de rede.</td></tr>
+      <tr><td>6</td><td>AWS IAM e ACM</td><td>Permissões de acesso e certificados TLS.</td></tr>
+      <tr><td>7</td><td>Amazon CloudWatch</td><td>Métricas, registros e alertas operacionais.</td></tr>
+    </table>
+  </div>
+
+  <div class="page-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+</div>
+
+<!-- Página 4 -->
+<div class="sheet">
+  <div class="sheet-inner-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS</div>
+  <div class="sheet-topbar">UNISUAM • Análise e Desenvolvimento de Sistemas &nbsp; <strong>Página 4</strong></div>
+
+  <div class="section">
+    <h2>10 Definição Preliminar de Computação, Redes, Segurança e Armazenamento</h2>
+    <table class="data">
+      <tr><th>Área</th><th>Definição</th></tr>
+      <tr><td>Computação</td><td>Ambiente Linux/PHP em EC2 de pequeno porte (t2/t3.micro no lab); conta completa: ECS Fargate dimensionado após testes.</td></tr>
+      <tr><td>Redes</td><td>VPC com camada web acessível via HTTPS e banco em sub-rede privada; porta 3306 somente a partir da aplicação.</td></tr>
+      <tr><td>Segurança</td><td>HTTPS, IAM com privilégio mínimo, segredos protegidos, CSRF, rate limit, validação de entradas, backup e políticas de retenção LGPD.</td></tr>
+      <tr><td>Armazenamento</td><td>EBS para sistema e aplicação, RDS para registros e S3 privado para cópias e artefatos de deploy.</td></tr>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>11 Forma de Disponibilização da Solução na AWS (Entrega Final)</h2>
+    <p>A publicação foi implementada com <strong>EC2 + Apache/PHP + SQLite</strong> no AWS Academy (script <code>academy-launch-ec2.ps1</code>) e documentada para conta completa via <strong>ECS + RDS</strong> (Terraform). Antes de produção plena, recomenda-se:</p>
+    <ol style="margin:8px 0;padding-left:22px;">
+      <li>Revisar o código no repositório GitHub;</li>
+      <li>Manter segredos fora do repositório;</li>
+      <li>Usar gateway de pagamentos e HTTPS em produção;</li>
+      <li>Testar formulários e critérios de aceite CA-01 a CA-10;</li>
+      <li>Validar restauração de backups do RDS.</li>
+    </ol>
+    <p><strong>Justificativa:</strong> a arquitetura suporta o processamento PHP do projeto e isola o banco de dados da internet, conforme o diagrama preliminar.</p>
+  </div>
+
+  <div class="section">
+    <h2>Referências</h2>
+    <p>Repositório CDT: https://github.com/AnnaBarbara5/cdt</p>
+    <p>AWS Documentation: https://docs.aws.amazon.com/</p>
+    <p>Modelo acadêmico: 2026-2-BG-PREPROJETO-INFRA-GR-03</p>
+  </div>
+
+  <div class="page-footer">CDT JACAREPAGUÁ | Documentação Entrega Final — Infraestrutura e Arquitetura AWS — UNISUAM Bangu — 2026</div>
+</div>
+
+</body>
+</html>
